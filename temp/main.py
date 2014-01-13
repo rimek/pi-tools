@@ -1,33 +1,37 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
 
-from sensor import TempSensorController
-       
-tempcontrol = TempSensorController("28-0000043fd3b3", 1)
+import time
+import xmlrpclib
+from setproctitle import setproctitle
+from SimpleXMLRPCServer import SimpleXMLRPCServer
+
+from process import Process
+from config import RPC_HOST, RPC_PORT
+
+
+DEBUG=True
+
+server = SimpleXMLRPCServer(("192.168.1.123", 10000))
+setproctitle('pi-temp')
+controller = Process(2)
 
 try:
-    print("Starting temp sensor controller")
-    #start up temp sensor controller
-    tempcontrol.start()
-    #loop forever, wait for Ctrl C
-    while(True):
-        print tempcontrol.temperature.C
-        print tempcontrol.temperature.F
-        time.sleep(5)
-#Ctrl C
+    if DEBUG:
+        print('Starting...')
+
+    controller.start()
+
+    server.register_function(controller.rpc_data, "temperatures")
+    server.serve_forever()
+
+    while True:
+        time.sleep(0.1)
+
 except KeyboardInterrupt:
-    print "Cancelled"
+    print('Cancelled')
 
-#Error
-except:
-    print "Unexpected error:", sys.exc_info()[0]
-    raise
+controller.stop()
+controller.join()
 
-#if it finishes or Ctrl C, shut it down
-finally:
-    print "Stopping temp sensor controller"
-    #stop the controller
-    tempcontrol.stopController()
-    #wait for the tread to finish if it hasn't already
-    tempcontrol.join()
-   
-print "Done"
+if DEBUG:
+   print('Quit')

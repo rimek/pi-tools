@@ -1,72 +1,38 @@
-import threading
 import time
+import os
 
-DEVICESDIR = "/sys/bus/w1/devices/"
+from temperature import Temperature
+from config import DEVICES_DIR
 
-#class for holding temperature values
-class Temperature():
-    def __init__(self, rawData):
-        self.rawData = rawData
-    @property
-    def C(self):
-        return float(self.rawData) / 1000
-    @property
-    def F(self):
-        return self.C * 9.0 / 5.0 + 23.0
+class Sensor(object):
+    def __init__(self, sensorId, sensorName):
+        self.path = os.path.join(DEVICES_DIR, sensorId, 'w1_slave')
+        self.id = sensorId
+        self.name = sensorName
 
-#class for controlling the temperature sensor
-class TempSensorController(threading.Thread):
-    def __init__(self, sensorId, timeToSleep):
-        threading.Thread.__init__(self)
-       
-        #persist the file location
-        self.tempSensorFile = DEVICESDIR + sensorId + "/w1_slave"
-
-        #persist properties
-        self.sensorId = sensorId
-        self.timeToSleep = timeToSleep
-
-         #update the temperature
-        self.updateTemp()
-       
-        #set to not running
-        self.running = False
-       
-    def run(self):
-        #loop until its set to stopped
-        self.running = True
-        while(self.running):
-            #update temperature
-            self.updateTemp()
-            #sleep
-            time.sleep(self.timeToSleep)
-        self.running = False
-       
-    def stopController(self):
-        self.running = False
-
-    def readFile(self):
-        sensorFile = open(self.tempSensorFile, "r")
-        lines = sensorFile.readlines()
-        sensorFile.close()
-        return lines
-
-    def updateTemp(self):
-        data = self.readFile()
-        #the output from the tempsensor looks like this
+    def read(self, path=None):
         #f6 01 4b 46 7f ff 0a 10 eb : crc=eb YES
         #f6 01 4b 46 7f ff 0a 10 eb t=31375
-        #has a YES been returned?
-        if data[0].strip()[-3:] == "YES":
-            #can I find a temperature (t=)
-            equals_pos = data[1].find("t=")
-            if equals_pos != -1:
-                tempData = data[1][equals_pos+2:]
-                #update temperature
-                self.temperature = Temperature(tempData)
-                #update success status
-                self.updateSuccess = True
+
+	path = self.path if not path else path
+
+        try:
+            sensor = open(path, "r")
+            data = sensor.readlines()
+            sensor.close()
+
+            if data[0].strip()[-3:] == "YES":
+                equals_pos = data[1].find("t=")
+                if equals_pos != -1:
+                    data = data[1][equals_pos+2:]
+                    temperature = Temperature(data)
+                else:
+                    raise IndexError
             else:
-                self.updateSuccess = False
-        else:
-            self.updateSuccess = False
+                raise IndexError
+        except IndexError:
+            print 'error'
+
+	return temperature
+
+
