@@ -8,7 +8,7 @@ pin = 22
 
 def bell(pin):
   time.sleep(0.05)
-  if not GPIO.input(buttonPin):
+  if not GPIO.input(pin):
     os.system("mpg123 /nfs/domek/plc/dzwonek.mp3")
 
 def initialize():
