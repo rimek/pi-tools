@@ -14,7 +14,8 @@ class Sensor(object):
         #f6 01 4b 46 7f ff 0a 10 eb : crc=eb YES
         #f6 01 4b 46 7f ff 0a 10 eb t=31375
 
-	path = self.path if not path else path
+        path = self.path if not path else path
+        temperature = '--'
 
         try:
             sensor = open(path, "r")
@@ -33,6 +34,6 @@ class Sensor(object):
         except IndexError:
             print 'error'
 
-	return temperature
+        return temperature
 
 
