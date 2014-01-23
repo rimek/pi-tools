@@ -61,7 +61,11 @@ class ProcessData(object):
         self.db.insert_temp(sensor, value)
 
     def get(self, sensor_name):
-        return self.data[sensor_name]
+        try:
+            return self.data[sensor_name]
+        except KeyError, e:
+            return '--'
+
 
     def get_all(self):
         return self.data
