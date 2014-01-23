@@ -45,7 +45,7 @@ class ProcessDB(object):
 
 
 class ProcessData(object):
-    timestamp = None
+    timestamp = 0
     db = None
     data = {}
 
