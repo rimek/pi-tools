@@ -2,12 +2,12 @@ import glob
 import os
 
 RPC_HOST = '192.168.13.123'
-RPC_PORT = '10000'
+RPC_PORT = 10000
 
 DEVICES_DIR = "/sys/bus/w1/devices/"
 
 DEVICES_NAMES = (
-    ('28-00000440436b', 'salon'),
+    ('28-00000440436b', 'living-room'),
     ('28-0000043f470d', 'office'),
     ('28-0000043f5dd8', 'entry')
 )

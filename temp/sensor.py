@@ -15,7 +15,7 @@ class Sensor(object):
         #f6 01 4b 46 7f ff 0a 10 eb t=31375
 
         path = self.path if not path else path
-        temperature = '--'
+        temperature = Temperature()
 
         try:
             sensor = open(path, "r")
@@ -25,8 +25,7 @@ class Sensor(object):
             if data[0].strip()[-3:] == "YES":
                 equals_pos = data[1].find("t=")
                 if equals_pos != -1:
-                    data = data[1][equals_pos+2:]
-                    temperature = Temperature(data)
+                    temperature.set_data(data[1][equals_pos+2:])
                 else:
                     raise IndexError
             else:
