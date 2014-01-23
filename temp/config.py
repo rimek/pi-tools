@@ -1,7 +1,7 @@
 import glob
 import os
 
-RPC_HOST = '192.168.1.123'
+RPC_HOST = '192.168.13.123'
 RPC_PORT = '10000'
 
 DEVICES_DIR = "/sys/bus/w1/devices/"

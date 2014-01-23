@@ -11,7 +11,7 @@ from config import RPC_HOST, RPC_PORT
 
 DEBUG=True
 
-server = SimpleXMLRPCServer(("192.168.1.123", 10000))
+server = SimpleXMLRPCServer((RPC_HOST, int(RPC_PORT)))
 setproctitle('pi-temp')
 controller = Process(2)
 
