@@ -93,10 +93,10 @@ class Process(threading.Thread):
     def stop(self):
         self.running = False
 
-    def rpc_get_sensor_value(self):
+    def rpc_get_values(self, sensor_name):
         return self.data.get_all()
 
-    def rpc_get_values(self, sensor_name):
+    def rpc_get_sensor_value(self):
         return self.data.get(sensor_name)
 
     def rpc_timestamp(self):
