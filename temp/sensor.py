@@ -31,7 +31,14 @@ class Sensor(object):
             else:
                 raise IndexError
         except IndexError:
+            print 'sensor read error'
+            #temperature.set_error(index)
+        except IOError:
+            print 'sensor not connected'
+            #temperature.set_error(io)
+        except:
             print 'error'
+            #temperature.set_error(other)
 
         return temperature
 
