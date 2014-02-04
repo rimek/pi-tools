@@ -47,7 +47,7 @@ class ProcessDB(object):
 class ProcessData(object):
     timestamp = 0
     db = None
-    data = {}
+    data = {'fake': 123}
 
     def __init__(self):
         self.db = ProcessDB()
